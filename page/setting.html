@@ -15,72 +15,42 @@
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
-
         <div class="layui-form layuimini-form">
             <div class="layui-form-item">
-                <label class="layui-form-label required">网站名称</label>
+                <label class="layui-form-label required">队伍名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="sitename" lay-verify="required" lay-reqtext="网站域名不能为空" placeholder="请输入网站名称"  value="layuimini" class="layui-input">
-                    <tip>填写自己部署网站的名称。</tip>
+                    <input type="text" name="team_name" lay-verify="required" lay-reqtext="队伍名称不能为空" placeholder="请输入队伍名称"  value="layuimini" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label required">网站域名</label>
-                <div class="layui-input-block">
-                    <input type="text" name="domain" lay-verify="required" lay-reqtext="网站域名不能为空" placeholder="请输入网站域名"  value="http://layuimini.99php.cn" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">缓存时间</label>
+                <label class="layui-form-label required">队员人数需求</label>
                 <div class="layui-input-inline" style="width: 80px;">
-                    <input type="text" name="cache" lay-verify="number" value="0" class="layui-input">
+                    <input type="text" name="team_num" lay-verify="number" value="1" class="layui-input">
                 </div>
-                <div class="layui-input-inline layui-input-company">分钟</div>
-                <div class="layui-form-mid layui-word-aux">本地开发一般推荐设置为 0，线上环境建议设置为 10。</div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">最大文件上传</label>
-                <div class="layui-input-inline" style="width: 80px;">
-                    <input type="text" name="cache" lay-verify="number" value="2048" class="layui-input">
-                </div>
-                <div class="layui-input-inline layui-input-company">KB</div>
-                <div class="layui-form-mid layui-word-aux">提示：1 M = 1024 KB</div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">上传文件类型</label>
+                <label class="layui-form-label required">项目类型</label>
                 <div class="layui-input-block">
-                    <input type="text" name="cache" value="png|gif|jpg|jpeg|zip|rar" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label required">首页标题</label>
-                <div class="layui-input-block">
-                    <textarea name="title" class="layui-textarea">layuimini 简洁易用后台管理模板</textarea>
+                    <input type="radio" name="type" value="1" title="内核类" checked>
+                    <input type="radio" name="type" value="2" title="生态类">
+                    <input type="radio" name="type" value="2" title="开放类">
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">META关键词</label>
+                <label class="layui-form-label">项目关键词</label>
                 <div class="layui-input-block">
-                    <textarea name="keywords" class="layui-textarea" placeholder="多个关键词用英文状态 , 号分割"></textarea>
+                    <textarea name="project_keywords" class="layui-textarea" placeholder="多个关键词用英文状态 , 号分割"></textarea>
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">META描述</label>
+                <label class="layui-form-label required">详细描述</label>
                 <div class="layui-input-block">
-                    <textarea name="descript" class="layui-textarea">layuimini，最简洁、清爽、易用的layui后台框架模板。</textarea>
-                </div>
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label required">版权信息</label>
-                <div class="layui-input-block">
-                    <textarea name="copyright" class="layui-textarea">© 2019 layuimini.99php.cn MIT license</textarea>
+                    <textarea name="project_descript" class="layui-textarea" placeholder="详细描述你的项目想法"></textarea>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="setting">确认保存</button>
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="setting">确认创建</button>
                 </div>
             </div>
         </div>
@@ -88,16 +58,47 @@
 </div>
 <script src="../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
 <script>
-    layui.use(['form'], function () {
-        var form = layui.form
-            , layer = layui.layer;
+    function getQueryVariable(variable){
+        let query = window.location.search.substring(1);
+        let vars = query.split("&");
+        for (let i=0;i<vars.length;i++) {
+            let pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+    layui.use(['form', 'jquery'], function () {
+        var form = layui.form, layer = layui.layer, $ = layui.jquery;
 
         //监听提交
         form.on('submit(setting)', function (data) {
-            parent.layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
+            parent.layer.alert("确定是否提交", {
+                title: '提示',
             });
-            return false;
+
+            var accountId = getQueryVariable("accountId");
+            console.log(accountId)
+            console.log(data.field)
+            console.log(data.field.team_name, data.field.team_num, data.field.project_descript, data.field.project_keywords);
+
+            // 和后端进行交互
+            $.post('url', {
+                account: accountId,
+                teamName: data.field.team_name,
+                teamNum: data.field.team_num,
+                projectDes: data.field.project_descript,
+                projectKeyWord: data.field.project_keywords,
+            }, function () {}).
+            success(function () {
+                layer.alert("提交成功")
+                return true
+            }).
+            error(function () {
+                return false
+            });
+
+            return true;
         });
 
     });
