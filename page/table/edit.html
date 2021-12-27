@@ -65,23 +65,16 @@
         return(false);
     }
 
-    function getQueryVariableFromParent(variable){
-        let query = window.parent.location.search.substring(1);
-        let vars = query.split("&");
-        for (let i=0;i<vars.length;i++) {
-            let pair = vars[i].split("=");
-            if(pair[0] == variable){return pair[1];}
-        }
-        return(false);
-    }
 
     layui.use(['form', 'jquery'], function () {
         var form = layui.form,
             layer = layui.layer,
             $ = layui.jquery;
 
+        var accountId = getQueryVariable("accountId")
         var id = getQueryVariable("id");
-        var accountId = getQueryVariableFromParent("accountId")
+        console.log("id", id)
+        console.log("accountId", accountId)
         var team_name, project_name, captain, project_decription
         var team_mate = ""
         $.ajax({
@@ -103,9 +96,14 @@
         });
 
         $.ajax({
-            url: "http://180.184.70.75:8080/personList?team_id?" + id,
+            url: "http://180.184.70.75:8080/personList?team_id=" + id,
             type: 'get',
             success: function(result) {
+                if (result == null) {
+                    $("#captain").text("")
+                    $("#team_mate").text("")
+                    return
+                }
                 console.log("get personlist success", result)
                 for (i = 0; i < result.length; i++) {
                     if (result[i].role == 1) {

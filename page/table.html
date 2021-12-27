@@ -31,6 +31,16 @@
         }
         return(false);
     }
+    function getParentQueryVariable(variable){
+        let query = window.parent.location.search.substring(1);
+        let vars = query.split("&");
+        for (let i=0;i<vars.length;i++) {
+            let pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+    var accountId = getParentQueryVariable("accountId")
 
     layui.use(['form', 'table'], function () {
         var $ = layui.jquery,
@@ -70,7 +80,7 @@
                     maxmin:true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '../page/table/edit.html?id='+data.id,
+                    content: '../page/table/edit.html?id='+data.id + "&accountId=" + accountId,
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
