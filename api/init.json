@@ -23,19 +23,19 @@
           "child": [
             {
               "title": "内核类",
-              "href": "page/table.html?type=1",
+              "href": "page/table.html?type=0",
               "icon": "fa fa-tachometer",
               "target": "_self"
             },
             {
               "title": "生态类",
-              "href": "page/table.html?type=2",
+              "href": "page/table.html?type=1",
               "icon": "fa fa-tachometer",
               "target": "_self"
             },
             {
               "title": "开放类",
-              "href": "page/table.html?type=3",
+              "href": "page/table.html?type=2",
               "icon": "fa fa-tachometer",
               "target": "_self"
             }
@@ -43,7 +43,7 @@
         },
         {
           "title": "创建队伍",
-          "href": "page/setting.html?accountId=100290",
+          "href": "page/setting.html",
           "icon": "fa fa-gears",
           "target": "_self"
         }

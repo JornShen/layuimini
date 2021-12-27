@@ -19,33 +19,27 @@
             <div class="layui-form-item">
                 <label class="layui-form-label required">队伍名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="team_name" lay-verify="required" lay-reqtext="队伍名称不能为空" placeholder="请输入队伍名称"  value="layuimini" class="layui-input">
+                    <input type="text" id="team_name" name="team_name" lay-verify="required" lay-reqtext="队伍名称不能为空" placeholder="请输入队伍名称"  class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label required">队员人数需求</label>
-                <div class="layui-input-inline" style="width: 80px;">
-                    <input type="text" name="team_num" lay-verify="number" value="1" class="layui-input">
+                <label class="layui-form-label required">项目名称</label>
+                <div class="layui-input-block">
+                    <input type="text" id="project_name" name="project_name" lay-verify="required" lay-reqtext="项目名称不能为空" placeholder="请输入项目名称"  class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">项目类型</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="type" value="1" title="内核类" checked>
+                    <input id="type" type="radio" name="type" value="1" title="内核类" checked>
                     <input type="radio" name="type" value="2" title="生态类">
                     <input type="radio" name="type" value="2" title="开放类">
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">项目关键词</label>
-                <div class="layui-input-block">
-                    <textarea name="project_keywords" class="layui-textarea" placeholder="多个关键词用英文状态 , 号分割"></textarea>
-                </div>
-            </div>
-            <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label required">详细描述</label>
                 <div class="layui-input-block">
-                    <textarea name="project_descript" class="layui-textarea" placeholder="详细描述你的项目想法"></textarea>
+                    <textarea id="project_description" name="project_descript" class="layui-textarea" placeholder="详细描述你的项目想法"></textarea>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -59,7 +53,7 @@
 <script src="../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
 <script>
     function getQueryVariable(variable){
-        let query = window.location.search.substring(1);
+        let query = window.parent.location.search.substring(1);
         let vars = query.split("&");
         for (let i=0;i<vars.length;i++) {
             let pair = vars[i].split("=");
@@ -68,39 +62,58 @@
         return(false);
     }
 
+    var httpurl = "http://180.184.70.75:8080"
     layui.use(['form', 'jquery'], function () {
         var form = layui.form, layer = layui.layer, $ = layui.jquery;
-
+        var accountId = getQueryVariable("accountId");
         //监听提交
         form.on('submit(setting)', function (data) {
-            parent.layer.alert("确定是否提交", {
-                title: '提示',
-            });
+            console.log("acccountID", accountId)
+            $.ajax({
+                    url: "http://180.184.70.75:8080/team",
+                    data: JSON.stringify({
+                        name: data.field.team_name,
+                        project_name: data.field.project_name,
+                        description: data.field.project_descript,
+                        type: parseInt(data.field.type),
+                    }),
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(result) {
+                        var teamId = result.id;
+                        console.log(teamId);
+                        $.ajax({
+                            url: "http://180.184.70.75:8080/updatePerson",
+                            type: 'post',
+                            dataType: 'json',
+                            data: JSON.stringify({
+                                id: parseInt(accountId),
+                                role: parseInt("1"),
+                                team_id: parseInt(teamId),
+                            }),
+                            success: function(result) {
+                                alert("Success");
+                                console.log("update people success")
+                                $("#team_name").val("")
+                                $("#project_name").val("")
+                                $("#project_description").val("")
 
-            var accountId = getQueryVariable("accountId");
-            console.log(accountId)
-            console.log(data.field)
-            console.log(data.field.team_name, data.field.team_num, data.field.project_descript, data.field.project_keywords);
+                            },
+                            error: function () {
+                                console.log("error")
+                            }
+                        });
+                        return true
+                    },
+                    error: function(result) {
+                        alert("error");
+                        console.log(result)
+                        return false
+                    },
+                });
 
-            // 和后端进行交互
-            $.post('url', {
-                account: accountId,
-                teamName: data.field.team_name,
-                teamNum: data.field.team_num,
-                projectDes: data.field.project_descript,
-                projectKeyWord: data.field.project_keywords,
-            }, function () {}).
-            success(function () {
-                layer.alert("提交成功")
-                return true
-            }).
-            error(function () {
-                return false
-            });
 
-            return true;
         });
-
     });
 </script>
 </body>
